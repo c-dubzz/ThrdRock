@@ -9,4 +9,3 @@ class HeadlineSpider(scrapy.Spider):
     def parse(self, response):
         headline = response.css('.e15t083i0::text').extract()
         yield {'headlineText': headline}
-
