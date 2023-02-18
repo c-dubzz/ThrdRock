@@ -24,24 +24,24 @@ def get_headlines(url):
 
 url = 'https://www.nationalgeographic.com/pages/topic/latest-stories'
 headlines = get_headlines(url)
-print(headlines)
+# print(headlines)
 
 url = 'https://www.nytimes.com/spotlight/learning-stem'
 headlines = get_headlines(url)
-print(headlines)
+# print(headlines)
 
 url = 'https://www.sciencedaily.com/news/'
 headlines = get_headlines(url)
-print(headlines)
+# print(headlines)
 
 url = 'https://www.theguardian.com/us/environment'
 headlines = get_headlines(url)
-print(headlines)
+# print(headlines)
 
 url = 'https://www.theguardian.com/us/technology'
 headlines = get_headlines(url)
-print(headlines)
+# print(headlines)
 
 url = 'https://www.theguardian.com/science'
 headlines = get_headlines(url)
-print(headlines)
+# print(headlines)
