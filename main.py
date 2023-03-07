@@ -22,19 +22,19 @@ def get_headlines(url):
     for headline in headlines:
         x = headline.get_text().strip()
         # x = headlines.get_text().strip()                   MAYBE??????
-        headlines_text = headlines_text + x
+        headlines_text = headlines_text + " \n" + x
         
     return headlines_text
 
 # create the table (if table DNE) for data entry
 def create_table():
-    c.execute('CREATE TABLE IF NOT EXISTS headlinesTable (textColumn TEXT, vals REAL, date TEXT)')
+    c.execute('CREATE TABLE IF NOT EXISTS headlinesTable (textColumn TEXT, date TEXT)')
 
 def enter_data(urlText, randNum):
     t = time.time()
     date = str(datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S'))
-    params = (urlText, randNum, date)
-    c.execute("INSERT INTO headlinesTable (textColumn, vals, date) VALUES (?, ?, ?)", (params))
+    params = (urlText, date)
+    c.execute("INSERT INTO headlinesTable (textColumn, date) VALUES (?, ?)", (params))
     conn.commit()
 
 # Connect to the database
