@@ -1,46 +1,64 @@
 import requests
 import sqlite3
 from bs4 import BeautifulSoup
+import time
+import datetime
+import random
+#from flask import Flask, render_template              STILL NEED TO FIX
 
-
+# extracts headline text from given url
 def get_headlines(url):
-    # Extract the text from headlines on a given url
+    # send GET request to url
     response = requests.get(url)
+
+    # Parse the HTML content using Beautiful Soup
     content = BeautifulSoup(response.text, 'html.parser')
+
     headlines = content.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-    headlines_text = [headline.get_text().strip()
-                      for headline in headlines]
+
+    headlines_text = ""
+
+    # Extract the text content of each headline and adds it to string a
+    for headline in headlines:
+        x = headline.get_text().strip()
+        # x = headlines.get_text().strip()                   MAYBE??????
+        headlines_text = headlines_text + x
+        
     return headlines_text
 
+# create the table (if table DNE) for data entry
+def create_table():
+    c.execute('CREATE TABLE IF NOT EXISTS headlinesTable (textColumn TEXT, vals REAL, date TEXT)')
 
-# Connect to the database and create new headlines table
+def enter_data(urlText, randNum):
+    t = time.time()
+    date = str(datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S'))
+    params = (urlText, randNum, date)
+    c.execute("INSERT INTO headlinesTable (textColumn, vals, date) VALUES (?, ?, ?)", (params))
+    conn.commit()
+
+# Connect to the database
 conn = sqlite3.connect('headlines.db')
 c = conn.cursor()
-c.execute('CREATE TABLE IF NOT EXISTS headlines (title TEXT)')
 
-# Define the URL of the webpage to scrape and get headlines from it
-url = 'https://www.nationalgeographic.com/pages/topic/latest-stories'
-headlines = get_headlines(url)
+# Define the URL to scrape
+url1 = 'https://www.nationalgeographic.com/pages/topic/latest-stories'
+url2 = 'https://www.nytimes.com/spotlight/learning-stem'
+url3 = 'https://www.sciencedaily.com/news/'
+url4 = 'https://www.theguardian.com/us/environment'
+url5 = 'https://www.theguardian.com/us/technology'
+url6 = 'https://www.theguardian.com/science'
 
-url = 'https://www.nytimes.com/spotlight/learning-stem'
-headlines = get_headlines(url)
 
-url = 'https://www.sciencedaily.com/news/'
-headlines = get_headlines(url)
+create_table()
 
-url = 'https://www.theguardian.com/us/environment'
-headlines = get_headlines(url)
+# Loop through array of urls, adding each to database
+urls = [url1, url2, url3, url4, url5, url6]
+for item in (urls):
+    txt = get_headlines(item)
+    x = 1
+    enter_data(txt, x)
+    x = x + 1
 
-url = 'https://www.theguardian.com/us/technology'
-headlines = get_headlines(url)
-
-url = 'https://www.theguardian.com/science'
-headlines = get_headlines(url)
-
-# Insert each headline into database
-for headlines in headlines:
-    c.execute('''INSERT INTO headlines (headline) VALUES (?)''', (headlines,))
-
-# Commit changes and close connection
-conn.commit()
+c.close()
 conn.close()
