@@ -1,0 +1,49 @@
+import requests
+import sqlite3
+from bs4 import BeautifulSoup
+#from flask import Flask, render_template
+
+def get_headlines(url):
+    # Make a GET request to the URL
+    response = requests.get(url)
+
+    # Parse the HTML content using Beautiful Soup
+    content = BeautifulSoup(response.text, 'html.parser')
+
+    # Find all the headline tags (h1, h2, h3, h4, h5, h6)
+    headlines = content.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+
+    headlines_text = ""
+
+    # Extract the text content of each headline and adds it to a large string
+    for headline in headlines:
+        a = headline.get_text().strip()
+        # if list is not full && exists, add 'a' to list, dictionary, etc
+        headlines_text += a
+        
+    return headlines_text
+
+# Connect to the database
+conn = sqlite3.connect('headlines.db')
+c = conn.cursor()
+
+# Create the headlines table if it doesn't already exist
+c.execute('CREATE TABLE IF NOT EXISTS headlinesTable (textColumn TEXT, vals REAL)')
+
+# Define the URL to scrape
+url1 = 'https://www.nationalgeographic.com/pages/topic/latest-stories'
+url2 = 'https://www.nytimes.com/spotlight/learning-stem'
+url3 = 'https://www.sciencedaily.com/news/'
+url4 = 'https://www.theguardian.com/us/environment'
+url5 = 'https://www.theguardian.com/us/technology'
+url6 = 'https://www.theguardian.com/science'
+
+# Loop through array of urls, adding each to database
+urls = [url1, url2, url3, url4, url5, url6]
+for i in (urls):
+    headlines = get_headlines(i)
+    c.execute("INSERT INTO headlinesTable VALUES (example, 1)")
+    conn.commit()
+
+conn.close()
+c.close()
