@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import time
 import datetime
 import random
-#from flask import Flask, render_template              STILL NEED TO FIX
+#from flask import Flask, render_template             STILL NEED TO FIX
 
 # extracts headline text from given url
 def get_headlines(url):
